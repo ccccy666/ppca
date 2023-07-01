@@ -19,13 +19,13 @@ int mask25_30 = 0b0111111'00000'00000'000'00000'0000000;//only used in SB comman
 int mask21_30 = 0b0111111'11110'00000'000'00000'0000000;//only used in UJ commands
 int mask12_31 = mask12_14 | mask15_19 | mask20_24 | mask25_31, mask20_31 = mask20_24 | mask25_31, mask12_19 =
         mask12_14 | mask15_19;
-int cycle=0,PC=0;
+int cycle=0,PC=0,oldpc=0;
 bool stuck=0;
 int rs_num=0,sl_num=0;
 int jumpnum=0;
 int cnt=0;
 int sign_expansion(int x,int digit){
-    //return x >> beg  ? -1 ^ (1 << beg) - 1 | x : x;
+    //return x >> (digit-1)  ? -1 ^ (1 << (digit-1)) - 1 | x : x;
     if(digit==0)return 0;
     if(digit==32)return x ;
     bool high=(x&(1<<(digit-1)));
@@ -65,6 +65,12 @@ struct Command{
     int32_t rv1=0,rv2=0;
     Command(){};
     Command(CmdType t,int d,int s1,int s2,int im,int v1,int v2,abstract ab):type(t),rd(d),rs1(s1),rs2(s2),imm(im),rv1(v1),rv2(v2),tpe(ab){}
+    void operator=(const Command &other){
+        type=other.type;
+        tpe=other.tpe;
+        rd=other.rd,rs1=other.rs1,rs2=other.rs2,imm=other.imm;
+        rv1=other.rv1,rv2=other.rv2;
+    }
 };
 enum memop{
     FP,LOAD,STORE,JUMP,NONE
@@ -101,9 +107,9 @@ public:
     int sta[4]={0,1,2,3};
     int state;
     predictor(){
-        state=3;
+        state=2;
     }
-    bool change(bool jump){
+    void change(bool jump){
         if(state==0){
             if(jump){
                 state=1;
@@ -131,7 +137,7 @@ public:
         return state>1;
     }
 };
-predictor pre[6];
+predictor pre[10];
 int get_pre(Command cmd)
 {
     switch (cmd.type)
@@ -148,7 +154,7 @@ int get_pre(Command cmd)
 }
 class memory{
 public:
-    int data[100000];
+    int data[3000000];
     int pos=0;
     memory(){
         memset(data,0,sizeof(data));
@@ -208,13 +214,27 @@ public:
         totype=NONE;
     };
     ~reorder(){};
-
+    void operator=(const reorder&other){
+        sequence=other.sequence;
+        tag=other.tag;
+        busy=other.busy;
+        ready=other.ready;
+        occupy=other.occupy;
+        depend=other.depend;
+        jump=other.jump;
+        time=other.time;
+        dest=other.dest;
+        value=other.value;
+        vj=other.vj,vk=other.vk,qj=other.qj,qk=other.qk,record=other.record,A=other.A;
+        totype=other.totype;
+        cmd=other.cmd;
+    }
 };
 
 class ROB{//reordered buffer
 public:
     int head=0,tail=0;
-    reorder buffer[10000];
+    reorder buffer[20000];
     int size=0;
     //ROB(){};
     ROB(int t=32){
@@ -245,9 +265,20 @@ public:
             buffer[head]=reorder();
         }
     }
+    void operator=(const ROB &other){
+        while(!empty()){
+            pop();
+        }
+        head=other.head,tail=other.tail;
+        int h=head,t=tail;
+        while(h!=t){
+            buffer[(h+1)%size]=other.buffer[(h+1)%size];
+            h=(h+1)%size;
+        }
+    }
 };
-reorder rs[70];
-ROB rob,queue;
+reorder rs[70],oldrs[70];
+ROB rob,queue,oldrob;
 
 class regist{
 public:
@@ -258,16 +289,22 @@ public:
         memset(reorder,0,sizeof(reorder));
     };
     ~regist(){};
+    void operator=(const regist &other){
+        for(int i=0;i<=32;i++){
+            data[i]=other.data[i];
+            reorder[i]=other.reorder[i];
+        }
+    }
 
 };
-regist reg;
+regist reg,oldreg;
 
 bool predict(reorder &input)
 {
     return pre[get_pre(input.cmd)].get_state();
         //return His_Pre[get_reversetype(ip.cmd)].get_prediction(branch[get_reversetype(ip.cmd)].st);
 }
-int to_rs(reorder &input){
+void to_rs(reorder &input){
     if(input.totype==LOAD||input.totype==STORE){
         for(int i=33;i<=64;i++){
             if(!rs[i].occupy){
@@ -276,7 +313,7 @@ int to_rs(reorder &input){
                 sl_num++;
                 rob.buffer[input.tag].tag=i;
 
-                return i;
+                //return i;
             }
 
 
@@ -289,7 +326,7 @@ int to_rs(reorder &input){
                 rs_num++;
                 rob.buffer[input.tag].tag=i;
 
-                return i;
+                //return i;
             }
 
         }
@@ -582,18 +619,19 @@ reorder ID(int cmd){
     //cout<<rs1<<' '<<rs2<<' '<<(unsigned int)imm<<std::endl;
     ord.sequence=cmd;
     ord.A=imm;
-    
+    ord.totype= get_memop(com);
+    ord.cmd=com;
     if(com.tpe==B){
         ord.dest=PC;
         ord.jump= predict(ord);
         if(ord.jump)PC=ord.dest+ord.A-4;
     }
     
-    ord.totype= get_memop(com);
+    
     if(ord.totype==LOAD||ord.totype==STORE){
         ord.time=3;
     }else ord.time=1;
-    ord.cmd=com;
+    
     // cout<<rs1<<' '<<rs2<<std::endl;
     // cout<<com.rs1<<' '<<com.rs2<<std::endl;
     return ord;
@@ -608,7 +646,7 @@ void IF(){
     reorder re=ID(x);
     //cout<<re.cmd.rs1<<' '<<re.cmd.rs2<<std::endl;
     if(re.dest!=-1){
-        //std::cout<<x<<std::endl;
+        //std::cout<<(unsigned int)x<<' ';
         queue.push(re);
 }
 }
@@ -709,7 +747,7 @@ void execute(reorder &input){
     }
 }
 
-void wb(reorder &input){
+void alu(reorder &input){
     rob.buffer[input.tag].busy=true;
     rob.buffer[input.tag].A=input.A;
     rob.buffer[input.tag].vj=input.vj;
@@ -855,8 +893,18 @@ void printreg()
             std::cout<<rs[i].vj<<' '<<rs[i].vk<<' '<<rs[i].qj<<' '<<rs[i].qk<<' '<<rs[i].A<<'\n';
         }
     }
+void flush(){
+    oldpc=PC;;
+    for(int i=1;i<=64;i++){
+        oldrs[i]=rs[i];
+    }
+    oldrob=rob;
+    oldreg=reg;
+
+}//做样子的，屁用没有    
 int run(){
     //cout<<1<<std::endl;
+    flush();
     bool commi=0;
     stuck=queue.full();
     if(!stuck)IF();
@@ -885,7 +933,7 @@ int run(){
     for(int i=1;i<=64;i++){//遍历rs
         if(!rs[i].busy&&!rs[i].depend){
             //std::cout<<i<<' '<<6666666<<std::endl;
-            wb(rs[i]);
+            alu(rs[i]);
             cdb_=i;
             rs[i].busy=1;//防止重复广播
             break;
@@ -932,7 +980,7 @@ int run(){
         }
         rs[rob.front().tag]=reorder();
         if((rob.front().cmd.tpe==B&&rob.front().depend!=rob.front().jump)||rob.front().cmd.type==jalr||rob.front().cmd.type==jal){
-            /*clear*/
+            //clear
             if(rob.front().cmd.tpe==B)
                 cnt++;
             while(!queue.empty()){
@@ -978,7 +1026,7 @@ int main() {
         cycle++;
         //if(cycle==9999)break;
     }
-
+    //cout<<(double)(cnt/jumpnum);
 
 
     //printInt(177);
