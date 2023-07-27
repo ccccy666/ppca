@@ -815,6 +815,41 @@ with open('网址.jsonl', 'r') as file:
 ### 后期
 整体思路是类似的，
 主要使用 `huggingface` 中的 bert 预训练模型进行深度学习，构建神经网络。
+- 预训练模型的选择
+  - `bert-base-chinese`
+  - `allenai/longformer-base-4096`
+  - `algolet/bert-large-chinese`
+  
+  
+- 下游模型中的神经网络层
+
+  - `Model1`由四个全连接层组成。每个全连接层都由线性层和批量归一化层组成，并使用ReLU激活函数进行非线性变换。
+  - `Model2`是多层卷积神经网络。
+
+- batch_size
+  - 16/32
+  
+- max_length（预训练模型接受一句话的最大长度）
+  - 512
+  - 1024/2048（仅`algolet/bert-large-chinese` 可用）
+  
+  
+  预训练模型限制了能接受的最大的长度，而我们有不少数据都是超过这个长度的，所以实际上模型接受的只是句子的一部分。而默认情况下，则是从句首截取指定长度。这也是一开始遇到的一个问题。而可能的解决办法有三种：
+  - [x] 调整模型使其能接受更长的句子，或使用其他模型。
+  - [x] 随机在句子中选取一段。
+  
+  
+- requires_grad（微调 bert）
+  
+- weight_decay（减少过拟合的可能）
+  - 1e-5
+- learning_rate（梯度下降时的学习率）
+
+  - 1e-3
+  - 5e-5
+  - 5e-6
+  
+
 
 | 数据  | 模型参数(tokenizer, model, batch_size, max_length, requires_grad_op, learning_rate, weight_decay=default) | 训练集预测准确率 | 测试集预测准确率                |
 | ----- | ------------------------------------------------------------ | ---------------- | ------------------------------- |
