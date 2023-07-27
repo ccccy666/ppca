@@ -813,9 +813,7 @@ with open('网址.jsonl', 'r') as file:
 
 相关参数：TfidfVectorizer(), RandomForestClassifier(n_estimators=300, random_state=43)
 ### 后期
-
-主要使用 `huggingface` 中的 bert 预训练模型进行深度学习，构建神经网络。
-
+整体思路是类似的，
 主要使用 `huggingface` 中的 bert 预训练模型进行深度学习，构建神经网络。
 
 | 数据  | 模型参数(tokenizer, model, batch_size, max_length, requires_grad_op, learning_rate, weight_decay=default) | 训练集预测准确率 | 测试集预测准确率                |
