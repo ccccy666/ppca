@@ -820,7 +820,7 @@ with open('网址.jsonl', 'r') as file:
   - `allenai/longformer-base-4096`
   - `algolet/bert-large-chinese`
   
-  - batch_size
+- batch_size
   - 16/32
   
 - max_length（预训练模型接受一句话的最大长度）
@@ -831,13 +831,13 @@ with open('网址.jsonl', 'r') as file:
   预训练模型限制了能接受的最大的长度，实际上模型接受的只是句子的一部分。可能的解决办法：
   -  调整模型使其能接受更长的句子，或使用其他模型。
   -  随机在句子中选取一段。
+    
 - 下游模型中的神经网络层
 
   - `Model1`由四个全连接层组成。每层都使用ReLU激活函数进行非线性变换。
   - `Model2`是多层卷积神经网络。
 
 
-  
   
 - requires_grad（微调 bert）
   
