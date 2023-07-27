@@ -811,7 +811,107 @@ with open('网址.jsonl', 'r') as file:
 
 可以看出，TfidfVectorizer() 与 RandomForestClassifier() 的组合效果是最好的，而朴素贝叶斯的组合则表现最差。这或许与我们分类的问答形式有关。
 
-相关参数：TfidfVectorizer(), RandomForestClassifier(n_estimators=300, random_state=43)
+最佳相关参数：TfidfVectorizer(), RandomForestClassifier(n_estimators=300, random_state=43)
+
+样例代码：
+```
+import jieba
+import re
+import numpy as np
+from sklearn.decomposition import PCA
+from sklearn.feature_extraction.text import TfidfVectorizer
+import gensim
+from gensim.models import Word2Vec
+import matplotlib.pyplot as plt
+import matplotlib
+# -*- coding: utf-8 -*-
+import json
+import jsonlines
+import os
+
+
+stopwords = [
+    
+    "的", "地", "得", "而", "了", "在", "是", "我", "我们", "你", "您", "他", "她", "它", "他们",
+    "她们", "它们", "这", "那", "这里", "那里", "这个", "那个", "之", "与", "以", "及", "或", "同",
+    "和", "呢", "吗", "嗯", "啊", "哦", "哈", "喂", "多少", "一些", "一个", "两个", "几个", "好",
+    "很", "非常", "不", "没有", "可以", "能", "要", "会", "就", "也", "还", "没", "别", "只", "但",
+    "然后", "因为", "所以", "如果", "虽然", "但是", "如何", "什么", "哪些", "怎么", "为什么", "是否",
+    "这样", "那样", "这种", "那种", "一样", "那么", "如此", "这些", "那些", "自己", "别人", "每个",
+    "一共", "全部", "一部分", "一点", "一种", "一种类型", "例如", "比如", "包括", "等等", "等", "等等。",
+    "等等，", "等等...", "等等......", "某个", "某种", "某些", "其它", "其他", "更多", "更少",
+    "更好", "更坏", "最好", "最坏", "最多", "最少", "最大", "最小", "最高", "最低", "最近", "最早",
+    "最晚", "最新", "最老", "最重要", "最不重要", "最有效", "最无效", "最合适", "最不合适", "越...越...",
+    "随着", "关于", "关于...的", "对于", "通过", "采用", "使用", "实现", "完成", "可以使用", "建立",
+    "创建", "开发", "编写", "设计", "解决", "处理", "改进", "优化", "增加", "减少", "调整", "更新",
+    "删除", "替换", "维护", "管理", "监控", "测试", "调试", "调度", "分析", "评估", "计算", "查找",
+    "排序", "过滤", "转换", "比较", "合并", "拆分", "复制", "粘贴", "备份", "恢复", "导入", "导出",
+    "下载", "上传", "安装", "卸载", "配置", "设置", "启动", "停止", "求求",
+    # 扩展的常见停用词
+    "这些都是", "这些都可以", "这些都可能", "以下是", "一些例子", "以下情况", "其他方式", "不同方法", 
+    "最重要的是", "最常用的是", "最简单的方法", "最有效的方法", "最好的途径", "最差的情况", "最常见的错误",
+    "更详细的信息", "更大的问题", "更好的解决方案", "更准确的结果", "越多越好", "越少越好", "更快速的速度",
+    "更高效的算法", "更低的成本", "更长的时间", "更短的时间", "更晚的版本", "更早的日期", "更新的特性",
+    "更老的系统", "更强大的功能", "更灵活的选项", "更安全的环境", "更稳定的状态", "更可靠的资源", '\n',
+    '(',')','.','\r','，',',','。','！',' ','\r\n',"?",'\t','{','}','//','#','【','】'
+    # 添加更多的常见停用词...
+]
+
+
+con=["highQualityTrain","lowQualityTrain","highQualityTest","lowQualityTest"]
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
+
+
+# 假设你已经有一个特征向量 X 和对应的标签 Y
+rf_classifier = RandomForestClassifier(n_estimators=300, random_state=43)
+vectorizer = TfidfVectorizer(stop_words=stopwords,token_pattern='(?u)\\b\\w\\w+\\b')
+total_list=[]
+for l in range(0,4):
+    
+# for i in range (1,2):
+    # print(l,i)
+    if not os.path.exists('训练数据\{}.jsonl'.format(con[l])):
+        # print(666)
+        break
+    
+    with jsonlines.open('训练数据\{}.jsonl'.format(con[l]), 'r') as reader:
+        
+            # 遍历每一行
+        for line in reader:
+            # 在这里可以修改每一行的值
+            text="Question: "+line['Question']+" Answer: "+line['Answer']
+            
+            seg_list = jieba.lcut(text)
+
+            # filtered_seg_list = [word for word in seg_list if word not in stopwords]
+            
+            # print(filtered_seg_list)
+
+            total_list.append(" ".join(seg_list))
+            # model=gensim.models.Word2Vec(filtered_seg_list, window=5, min_count=1, vector_size=128, workers=4,hs=1,negative=0)
+        if(l==1):
+
+            
+            # print(total_list)
+            X = vectorizer.fit_transform(total_list)
+            # print(X)
+            y_train1 =[0]*4986+[1] *4753 # 训练集标签
+            rf_classifier.fit(X, y_train1)
+            total_list=[]
+        elif(l==3):
+            # vectorizer = TfidfVectorizer()
+            
+            X = vectorizer.transform(total_list)
+            ytest1=[0]*524+[1]*495
+            y_pred = rf_classifier.predict(X)
+            # 假设 y_true 是真实的标签，y_pred 是模型的预测标签
+            accuracy = accuracy_score(ytest1, y_pred)
+
+            print("预测准确率：", accuracy)
+            
+
+```
 ### 后期
 整体思路是类似的，
 主要使用 `huggingface` 中的 bert 预训练模型进行深度学习，构建神经网络。
