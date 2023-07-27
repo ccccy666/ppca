@@ -816,6 +816,8 @@ with open('网址.jsonl', 'r') as file:
 
 主要使用 `huggingface` 中的 bert 预训练模型进行深度学习，构建神经网络。
 
+主要使用 `huggingface` 中的 bert 预训练模型进行深度学习，构建神经网络。
+
 | 数据  | 模型参数(tokenizer, model, batch_size, max_length, requires_grad_op, learning_rate, weight_decay=default) | 训练集预测准确率 | 测试集预测准确率                |
 | ----- | ------------------------------------------------------------ | ---------------- | ------------------------------- |
 | basic | "algolet/bert-large-chinese", 32, 512, False, 5e-5, Model1   |                  | ![](./classifier/results/2.png) |
