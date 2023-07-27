@@ -794,17 +794,17 @@ with open('网址.jsonl', 'r') as file:
 
 | 数据                                 | 模型                                                                                                                                                        | 训练集预测准确率 | 测试集预测准确率         |
 | ------------------------------------ |-----------------------------------------------------------------------------------------------------------------------------------------------------------| ------------------------------------ | ------------------ |
+| basic+CSDN精华                       | TfidfVectorizer(), RandomForestClassifier()                                                                                                               | 0.9957112801424178 | 0.8631732168850073 |
+| basic+CSDN精华                       | TfidfVectorizer(), RandomForestClassifier(n_estimators=300, random_state=43)                                                                              | 0.9957112801424178 | 0.8653566229985444 |
+| basic+CSDN精华 | CountVectorizer(), MultinomialNB(alpha = 0.15)                                                                                                            | 0.8528078977180774 | 0.7561863173216885 |
+| basic+CSDN精华 | CountVectorizer(), ComplementNB(alpha = 0.15)                                                                                                             | 0.8540216863570157 | 0.754730713245997 |
+| basic+CSDN精华 | Word2Vec(lines, vector_size = 25, window = 5 , min_count = 5, epochs=7, negative=10, sg=1), RandomForestClassifier(n_estimators = 300, random_state = 43) | 0.9957112801424178 | 0.8377001455604076 | 
 | basic                                | TfidfVectorizer(), RandomForestClassifier()                                                                                                               | 0.9947319491788038 | 0.8345724907063197 |
 | basic | TfidfVectorizer(), RandomForestClassifier(n_estimators=300, random_state=43)                                                                              | 0.9947319491788038 | 0.8392193308550185 |
 | basic | CountVectorizer(), MultinomialNB(alpha = 0.15)                                                                                                            | 0.8564197913438695 | 0.7379182156133829 |
 | basic | CountVectorizer(), ComplementNB(alpha = 0.15)                                                                                                             | 0.8562132011155872 | 0.7379182156133829 |
 | basic | Word2Vec(lines, vector_size = 25, window = 5 , min_count = 5, epochs=7, negative=10, sg=1), RandomForestClassifier(n_estimators = 300, random_state = 43) | 0.9947319491788038 | 0.7964684014869888 |
-| basic+CSDN精华                       | TfidfVectorizer(), RandomForestClassifier()                                                                                                               | 0.9957112801424178 | 0.8631732168850073 |
-| basic+CSDN精华                       | TfidfVectorizer(), RandomForestClassifier(n_estimators=300, random_state=43)                                                                              | 0.9957112801424178 | 0.8653566229985444 |
-| basic+CSDN精华 | CountVectorizer(), MultinomialNB(alpha = 0.15)                                                                                                            | 0.8528078977180774 | 0.7561863173216885 |
-| basic+CSDN精华 | CountVectorizer(), ComplementNB(alpha = 0.15)                                                                                                             | 0.8540216863570157 | 0.754730713245997 |
-| basic+CSDN精华 | Word2Vec(lines, vector_size = 25, window = 5 , min_count = 5, epochs=7, negative=10, sg=1), RandomForestClassifier(n_estimators = 300, random_state = 43) | 0.9957112801424178 | 0.8377001455604076 |
-| 
+
 
 
  `basic` 代表下发的已经标记好的之前爬取的 CSDN 和 Wikipedia 的问答。而 CSDN精华则默认为高质量。
