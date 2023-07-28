@@ -951,8 +951,8 @@ for l in range(0,4):
   
 
 
-| 数据  | 模型参数(tokenizer, model, batch_size, max_length, requires_grad_op, learning_rate, weight_decay=default, Model1/2) | 训练集预测准确率 | 测试集预测准确率                 |
-| ----- | ------------------------------------------------------------ | ---------------- | -------------------------------- |
+| 数据  | 模型参数(tokenizer, model, batch_size, max_length, requires_grad_op, learning_rate, weight_decay=default, Model1/2) | 测试集预测准确率                 |
+| ----- | ------------------------------------------------------------ | -------------------------------- |
 | basic | "algolet/bert-large-chinese", 32, 512, False, 5e-5, Model1   |                  | ![](2.png)  |
 | basic | "algolet/bert-large-chinese", 32, 512, True, 5e-5, Model1    |                  |                                  |
 | basic | 'bert-base-chinese', 'allenai/longformer-base-4096', 32, 1024, True, 5e-5, Model1 |                  |                                  |
