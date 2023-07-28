@@ -953,16 +953,16 @@ for l in range(0,4):
 
 | 数据  | 模型参数(tokenizer, model, batch_size, max_length, requires_grad_op, learning_rate, weight_decay=default, Model1/2) | 测试集预测准确率                 |
 | ----- | ------------------------------------------------------------ | -------------------------------- |
-| basic | "algolet/bert-large-chinese", 32, 512, False, 5e-5, Model1   | ![](2.png)  |
-| basic | 'bert-base-chinese', 'allenai/longformer-base-4096', 32, 1024, True, 5e-5, Model1 |                                  |
-| basic | 'bert-base-chinese', 'allenai/longformer-base-4096', 32, 2048, False, 5e-4, 1e-5, Model1 | ![](8.png)  |
-| basic | 'bert-base-chinese', 32, 512, False, 5e-5, Model1            | ![](15.png) |
-| basic | 'bert-base-chinese', 32, 512, False, 5e-5, 1e-5, Model2      | ![](12.png) |
-| basic | 'bert-base-chinese', 32, 512, True, 5e-5, Model1             | ![](5.png)  |
-| basic | 'bert-base-chinese', 32, 512, True, 5e-5, 1e-5, Model1       | ![](10.png) |
 | basic | 'bert-base-chinese', 32, 512, False, 1e-3, Model1            | ![](7.png)  |
 | basic | 'bert-base-chinese', 32, 512, False, 1e-3, 1e-5, Model1      | ![](11.png) |
 | basic | 'bert-base-chinese', 32, 512, True, 1e-3, Model1             | ![](6.png)  |
+| basic | 'bert-base-chinese', 32, 512, False, 5e-5, Model1            | ![](15.png) |
+| basic | 'bert-base-chinese', 32, 512, True, 5e-5, Model1             | ![](5.png)  |
+| basic | 'bert-base-chinese', 32, 512, True, 5e-5, 1e-5, Model1       | ![](10.png) |
 | basic | 'bert-base-chinese', 32, 512, False, 5e-6, 1e-5, Model1      |                                  |
 | basic | 'bert-base-chinese', 32, 512, False, 5e-5, 1e-5, Model1, random slice | ![](13.png) |
 | basic | 'bert-base-chinese', 32, 512, False, 1e-3, 1e-5, Model1, random slice | ![](14.png) |
+| basic | 'bert-base-chinese', 32, 512, False, 5e-5, 1e-5, Model2      | ![](12.png) |
+| basic | "algolet/bert-large-chinese", 32, 512, False, 5e-5, Model1   | ![](2.png)  |
+| basic | 'bert-base-chinese', 'allenai/longformer-base-4096', 32, 1024, True, 5e-5, Model1 |                                  |
+| basic | 'bert-base-chinese', 'allenai/longformer-base-4096', 32, 2048, False, 5e-4, 1e-5, Model1 | ![](8.png)  |
