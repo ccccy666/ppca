@@ -794,24 +794,24 @@ with open('网址.jsonl', 'r') as file:
 
 | 数据                                 | 模型                                                                                                                                                        | 测试集预测准确率         |
 | ------------------------------------ |-----------------------------------------------------------------------------------------------------------------------------------------------------------| ------------------ |
-| basic+CSDN精华                       | TfidfVectorizer(), RandomForestClassifier()                                                                                                               | 0.8631732168850073 |
-| basic+CSDN精华                       | TfidfVectorizer(), RandomForestClassifier(n_estimators=300, random_state=43)                                                                              | 0.8653566229985444 |
-| basic+CSDN精华 | CountVectorizer(), MultinomialNB(alpha = 0.15)                                                                                                            | 0.7561863173216885 |
+| basic+CSDN精华                       | TfidfVectorizer(), RandomForestClassifier()                                                                                                               |0.8329833169774289 |
+| basic+CSDN精华                       | TfidfVectorizer(), RandomForestClassifier(n_estimators=250, random_state=43)                                                                              | 0.8437782139352306 |
+| basic+CSDN精华 | CountVectorizer(), MultinomialNB(alpha = 0.15)                                                                                                            | 0.703631010794897 |
 | basic+CSDN精华 | CountVectorizer(), ComplementNB(alpha = 0.15)                                                                                                             |  0.754730713245997 |
-| basic+CSDN精华 | Word2Vec(lines, vector_size = 25, window = 5 , min_count = 5, epochs=7, negative=10, sg=1), RandomForestClassifier(n_estimators = 300, random_state = 43) |  0.8377001455604076 | 
-| basic                                | TfidfVectorizer(), RandomForestClassifier()                                                                                                               | 0.8345724907063197 |
-| basic | TfidfVectorizer(), RandomForestClassifier(n_estimators=300, random_state=43)                                                                              |  0.8392193308550185 |
-| basic | CountVectorizer(), MultinomialNB(alpha = 0.15)                                                                                                            |  0.7379182156133829 |
-| basic | CountVectorizer(), ComplementNB(alpha = 0.15)                                                                                                             |  0.7379182156133829 |
-| basic | Word2Vec(lines, vector_size = 25, window = 5 , min_count = 5, epochs=7, negative=10, sg=1), RandomForestClassifier(n_estimators = 300, random_state = 43) |  0.7964684014869888 |
+| basic+CSDN精华 | Word2Vec(lines, vector_size = 25, window = 5 , min_count = 5, epochs=7, negative=10, sg=1), RandomForestClassifier(n_estimators = 250, random_state = 43) |  0.8278900883218842 | 
+| basic                                | TfidfVectorizer(), RandomForestClassifier()                                                                                                               | 0.82746298429352748 |
+| basic | TfidfVectorizer(), RandomForestClassifier(n_estimators=250, random_state=43)                                                                              |  0.811827308537465 |
+| basic | CountVectorizer(), MultinomialNB(alpha = 0.15)                                                                                                            |  0.714288518155054 |
+| basic | CountVectorizer(), ComplementNB(alpha = 0.15)                                                                                                             |  0.7248478900883219 |
+| basic | Word2Vec(lines, vector_size = 25, window = 5 , min_count = 5, epochs=7, negative=10, sg=1), RandomForestClassifier(n_estimators = 250, random_state = 43) |  0.7711579980372915 |
 
 
 
  `basic` 代表下发的已经标记好的之前爬取的 CSDN 和 Wikipedia 的问答。而 CSDN精华则默认为高质量。
 
-可以看出，TfidfVectorizer() 与 RandomForestClassifier() 的组合效果是最好的，而朴素贝叶斯的组合则表现最差。这或许与我们分类的问答形式有关。
+TfidfVectorizer() 与 RandomForestClassifier() 的组合效果最好。
 
-最佳相关参数：TfidfVectorizer(), RandomForestClassifier(n_estimators=300, random_state=43)
+最佳相关参数：TfidfVectorizer(), RandomForestClassifier(n_estimators=250, random_state=43)
 
 样例代码：
 ```
