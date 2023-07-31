@@ -800,7 +800,7 @@ with open('网址.jsonl', 'r') as file:
 | basic+CSDN精华 | CountVectorizer(), ComplementNB(alpha = 0.15)                                                                                                             |  0.754730713245997 |
 | basic+CSDN精华 | Word2Vec(lines, vector_size = 25, window = 5 , min_count = 5, epochs=7, negative=10, sg=1), RandomForestClassifier(n_estimators = 250, random_state = 43) |  0.8278900883218842 | 
 | basic                                | TfidfVectorizer(), RandomForestClassifier()                                                                                                               | 0.82746298429352748 |
-| basic | TfidfVectorizer(), RandomForestClassifier(n_estimators=250, random_state=43)                                                                              |  0.811827308537465 |
+| basic | TfidfVectorizer(), RandomForestClassifier(n_estimators=250, random_state=43)                                                                              |  0.831827308537465 |
 | basic | CountVectorizer(), MultinomialNB(alpha = 0.15)                                                                                                            |  0.714288518155054 |
 | basic | CountVectorizer(), ComplementNB(alpha = 0.15)                                                                                                             |  0.7248478900883219 |
 | basic | Word2Vec(lines, vector_size = 25, window = 5 , min_count = 5, epochs=7, negative=10, sg=1), RandomForestClassifier(n_estimators = 250, random_state = 43) |  0.7711579980372915 |
